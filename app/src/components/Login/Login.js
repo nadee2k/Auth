@@ -5,9 +5,51 @@ import 'antd/dist/reset.css';
 import './index.css';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3000'; // Your backend URL
+
+export const registerUser = async (username, password) => {
+    return await axios.post(`${API_URL}/register`, { username, password });
+};
+
+export const loginUser = async (username, password) => {
+    return await axios.post(`${API_URL}/login`, { username, password });
+};
+
+export const getProtectedData = async (token) => {
+    return await axios.get(`${API_URL}/protected`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
 
 export default function Login() {
     const onFinish = (values) => {
+        const { username, password } = values
+        axios.post(`${API_URL}/login`, { username, password })
+    .then(response => {
+        if (response.data.validation) {
+            alert('User validated');
+        } else {
+            alert('Invalid credentials');
+        }
+    })
+    .catch(error => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                alert('Invalid credentials. Please try again.');
+            } else if (error.response.status === 404) {
+                alert('User not found. Please register.');
+            } else {
+                alert('An error occurred. Please try again later.');
+            }
+        } else {
+            console.error('Error during Axios request:', error);
+            alert('Unable to connect to the server. Please try again later.');
+        }
+    });
+
+
     }
   return (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>

@@ -7,7 +7,7 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000'; // Your backend URL
+const API_URL = 'http://localhost:4000'; // Your backend URL
 
 export const registerUser = async (username, password) => {
     return await axios.post(`${API_URL}/register`, { username, password });
@@ -28,6 +28,7 @@ export default function Login() {
         const { username, password } = values
         axios.post(`${API_URL}/login`, { username, password })
     .then(response => {
+        console.log('Axios response:', response);
         if (response.data.validation) {
             alert('User validated');
         } else {
